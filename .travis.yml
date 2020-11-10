@@ -25,15 +25,15 @@ before_script:
   - tar -xJf twrp.tar.xz --directory $HOME/twrp/ && rm twrp.tar.xz
 script:
   # Replace your $$USERNAME$$, $$REPO_URL$$, $$BRAND$$, $$DEVICE$$
-  - cd $HOME/twrp/ && git clone https://github.com/Zocker1012/twrp_device_Alps_ZH960
+  - cd $HOME/twrp/ && git clone https://github.com/$$USERNAME$$/$$REPO_URL$$.git device/$$BRAND$$/$$DEVICE$$
   - rm -rf bootable/recovery && git clone https://github.com/omnirom/android_bootable_recovery -b android-9.0 --depth 1 bootable/recovery
   - |
     docker run --rm -i -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) -v "$(pwd):/home/builder/twrp/:rw,z" -v "${HOME}/.ccache:/srv/ccache:rw,z" fr3akyphantom/droid-builder bash << EOF
     cd /home/builder/twrp/
     source build/envsetup.sh
     # Choose build flavor as "eng" or "userdebug"
-    BUILD_FLAVOR="main"
-    lunch omni_ZH960-${main}
+    BUILD_FLAVOR="eng"
+    lunch omni_$$DEVICE$$-${BUILD_FLAVOR}
     make -j$(nproc --all) recoveryimage
     exit
     EOF
