@@ -12,7 +12,7 @@ services:
 before_install:
   - docker pull fr3akyphantom/droid-builder:latest
 before_script:
-  - cd $HOME && mkdir twrp
+  - cd /tmp && mkdir twrp
   # download the TWRP Compressed Source Files from PhantomZone54's Release
   # Uncomment & Use below line If Building for Lollipop-based Devices
   # - TWRP_SOURCE="https://github.com/PhantomZone54/twrp_sources_norepo/releases/download/v3.3.1-20200222/MinimalOmniRecovery-twrp-5.1-norepo-20200222.tar.xz"
@@ -20,11 +20,11 @@ before_script:
   - TWRP_SOURCE="https://github.com/PhantomZone54/twrp_sources_norepo/releases/download/v3.3.1-20200222/MinimalOmniRecovery-twrp-6.0-norepo-20200222.tar.xz"
   # Uncomment & Use below line If Building for Nougat-based Devices
   # - TWRP_SOURCE="https://github.com/PhantomZone54/twrp_sources_norepo/releases/download/v3.3.1-20200222/MinimalOmniRecovery-twrp-7.1-norepo-20200222.tar.xz"
-  - wget -q ${TWRP_SOURCE} -O $HOME/twrp.tar.xz
-  - tar -xJf twrp.tar.xz --directory $HOME/twrp/ && rm twrp.tar.xz
+  - wget -q ${TWRP_SOURCE} -O /tmp/twrp.tar.xz
+  - tar -xJf twrp.tar.xz --directory /tmp/twrp/ && rm twrp.tar.xz
 script:
   # Replace your $$USERNAME$$, $$REPO_URL$$, $$BRAND$$, $$DEVICE$$
-  - cd $HOME/twrp/ && git clone https://github.com/Zocker1012/twrp_device_Alps_ZH960
+  - cd /tmp/twrp/ && git clone https://github.com/Zocker1012/twrp_device_Alps_ZH960
   - rm -rf bootable/recovery && git clone https://github.com/omnirom/android_bootable_recovery -b android-9.0 --depth 1 bootable/recovery
   - |
     docker run --rm -i -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) -v "$(pwd):/tmp/builder/twrp/:rw,z" -v "${HOME}/.ccache:/srv/ccache:rw,z" fr3akyphantom/droid-builder bash << EOF
@@ -38,8 +38,8 @@ script:
     EOF
 after_success:
   - export version=$(cat bootable/recovery/variables.h | grep "define TW_MAIN_VERSION_STR" | cut -d '"' -f2)
-  - cp tmp/twrp/out/target/product/ZH960/recovery.img tmp/twrp/TWRP-$version-ZH960-$(date +"%Y%m%d")-Unofficial.img
-  - cd tmp/twrp/
+  - cp /tmp/twrp/out/target/product/ZH960/recovery.img /tmp/twrp/TWRP-$version-ZH960-$(date +"%Y%m%d")-Unofficial.img
+  - cd /tmp/twrp/
   # Optional: You might need to switch from https://transfer.sh to https://file.io
   # - curl -s --upload-file TWRP-$version-$$DEVICE$$-$(date +"%Y%m%d")-Unofficial.img https://transfer.sh/ && echo ""
 deploy:
@@ -48,7 +48,7 @@ deploy:
   # The secret api_key will be loaded from the environment variables
   api_key: $GitOAUTHToken
   file_glob: true
-  file: $HOME/twrp/*.img
+  file: /tmp/twrp/*.img
   on:
     tags: false
     repo: Zocker1012/https://github.com/Zocker1012/twrp_device_Alps_ZH960 # Optional: If you want to deploy on different repository
