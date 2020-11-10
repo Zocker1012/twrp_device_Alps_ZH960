@@ -1,7 +1,6 @@
 os: linux
 dist: bionic
 language: generic
-sudo: required
 git:
   depth: 1
 addons:
@@ -33,7 +32,7 @@ script:
     source build/envsetup.sh
     # Choose build flavor as "eng" or "userdebug"
     BUILD_FLAVOR="eng"
-    lunch omni_ZH960-${BUILD_FLAVOR}
+    lunch omni_$$DEVICE$$-${BUILD_FLAVOR}
     make -j$(nproc --all) recoveryimage
     exit
     EOF
