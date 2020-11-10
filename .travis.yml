@@ -33,7 +33,7 @@ script:
     source build/envsetup.sh
     # Choose build flavor as "eng" or "userdebug"
     BUILD_FLAVOR="main"
-    lunch omni_ZH960-${BUILD_FLAVOR}
+    lunch omni_ZH960-${main}
     make -j$(nproc --all) recoveryimage
     exit
     EOF
